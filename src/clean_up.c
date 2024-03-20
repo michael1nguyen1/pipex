@@ -1,35 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/15 22:15:40 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/03/20 16:14:25 by linhnguy         ###   ########.fr       */
+/*   Created: 2024/03/20 16:14:42 by linhnguy          #+#    #+#             */
+/*   Updated: 2024/03/20 16:17:26 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-#define PIPEX_H
+#include "pipex.h"
 
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/wait.h>
-#include "../libft/libft.h"
-
-typedef struct pipex
+int free_array_error(char **array)
 {
-	char	*command_path1;
-	char	*command_path2;
-} t_pipex;
+	int i;
+	
+	i = 0;
+	while(array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
+	return (-1);
+}
 
-int			make_envir_var_array(char **argv, char **envp, t_pipex *data);
-
-int			array_len(char **a);
-
-void		free_array(char **array);
-int			free_array_error(char **array);
-
-#endif
+void free_array(char **array)
+{
+	int i;
+	
+	i = 0;
+	while(array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
+}

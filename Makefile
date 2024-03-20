@@ -6,7 +6,7 @@
 #    By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/15 19:56:43 by linhnguy          #+#    #+#              #
-#    Updated: 2024/03/15 22:59:34 by linhnguy         ###   ########.fr        #
+#    Updated: 2024/03/20 16:18:36 by linhnguy         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ LIBFTDIR = libft
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 DEBUG_CFLAGS = -fsanitize=address -g3
-SRCS = src/pipex.c
+SRCS = src/pipex.c src/envir_array.c src/utils.c src/clean_up.c
 OBJS = $(SRCS:.c=.o)
 RM = rm -f
 
