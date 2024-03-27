@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 15:48:32 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/03/20 17:21:22 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/03/27 17:20:22 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,12 +109,14 @@ bool make_envir_var_array(char **argv, char **envp, t_pipex *data)
 	char	**path_array;
 	char	*tmp;
 	
+	data->new_argv[0] = argv[2];
+	data->new_argv[1] = argv[3];
 	path = find_path(envp);
 	if (!path)
 		return (false);
 	path_array = ft_split(path, ':');
 	if (!path_array)
-		return (false);
+		free_bool(path, "Split failed \n");
 	free(path);
 	tmp = path_array[0];
 	path_array[0] = ft_strdup(&path_array[0][5]);
@@ -122,10 +124,7 @@ bool make_envir_var_array(char **argv, char **envp, t_pipex *data)
 		return (free_array_error(path_array));
 	free(tmp);
 	if (!make_array_full_path(argv, path_array, data))
-	{
-		perror("make_array_full_path failed");
-		return (false);
-	}
+		free_bool(NULL, "Making full path failed\n");
 	free_array(path_array);
 	return (true);
 }

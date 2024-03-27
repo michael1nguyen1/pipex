@@ -6,35 +6,53 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 21:53:16 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/03/20 17:16:53 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/03/27 17:25:52 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-int forking(char **v, t_pipex *data)
+bool execute()
 {
-	int fd1 = open(v[1], O_RDWR);
-	int fd2 = open(v[4], O_RDWR);
-	if (fd1 == -1 | fd2 == -1)
-		{
-			perror("open failed");
-			return (-1);
-		}
+	
+}
+
+int forking(char **argv, char **envp, t_pipex *data)
+{
+	int i;
+	int pid;
+	int pipes[2]; 
+
+	i = 0;
+	if (pipe(pipes) < 0)
+	{
+		perror("creating pipe failed");
+		return (-1);
+	}
+	while (i < 2)
+	{
+		fork();
+		if (pid == 0)
+			execute(data, argv, envp);
+		else
+			wait(NULL);
+		i++;
+	}
+	close_parents_forks();
 	return (0);
 }
 
-int main (int c, char **v, char **envp)
+int main (int argc, char **argv, char **envp)
 {
 	t_pipex		data;
 	
-	if (c == 5)
+	if (argc == 5)
 	{
-		make_envir_var_array(v, envp, &data);
-		forking(v, &data);
+		if(!make_envir_var_array(argv, envp, &data))
+			return(-1);
+		forking(argv, envp, &data);
 	}
 	else
 		return (-1);
-	printf("command 1 is %s and 2 is %s\n", data.command_path1, data.command_path2);
 	return (0);	
 }

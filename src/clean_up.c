@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cleanup.c                                          :+:      :+:    :+:   */
+/*   clean_up.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:14:42 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/03/20 16:17:26 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/03/27 17:02:21 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int free_array_error(char **array)
+bool free_array_error(char **array)
 {
 	int i;
 	
@@ -23,7 +23,7 @@ int free_array_error(char **array)
 		i++;
 	}
 	free(array);
-	return (-1);
+	return (false);
 }
 
 void free_array(char **array)
@@ -37,4 +37,13 @@ void free_array(char **array)
 		i++;
 	}
 	free(array);
+}
+bool free_bool(char *freeing, char *message)
+{
+	int i;
+	i = 0;
+
+	free(freeing);
+	ft_printf(message);
+	return (false);
 }
