@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 15:48:32 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/03/27 17:20:22 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/02 20:51:37 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,11 @@ static char	*make_whole_path(char const *s1, char const *s2)
 	if (!s3)
 		return (NULL);
 	while (s1[i])
-	{
 		s3[k++] = s1[i++];
-	}
 	i = 0;
 	s3[k++] = '/';
-	while (s2[i])
-	{
+	while (s2[i] && s2[i] != ' ')
 		s3[k++] = s2[i++];
-	}
 	s3[k] = '\0';
 	return (s3);
 }
@@ -47,7 +43,7 @@ static void initialize_path(char *path, int counter, t_pipex *data)
 		data->command_path2 = path;
 }
 
-static bool make_array_full_path(char **v, char**p, t_pipex *data)
+static bool make_array_full_path(char **argv, char**path_array, t_pipex *data)
 {
 	int		i;
 	int		j;
@@ -59,9 +55,9 @@ static bool make_array_full_path(char **v, char**p, t_pipex *data)
 	while (i <= 3)
 	{
 		j = 0;
-		while (p[j] != NULL)
+		while (path_array[j] != NULL)
 		{
-			tmp = make_whole_path(p[j], v[i]);
+			tmp = make_whole_path(path_array[j], argv[i]);
 			if (!tmp)
 			{
 				perror("make_whole_path failed");
@@ -78,6 +74,7 @@ static bool make_array_full_path(char **v, char**p, t_pipex *data)
 		}
 		i++;
 	}
+	printf("path1 is %s path2 is %s\n", data->command_path1, data->command_path1);
 	return (true);
 }
 
@@ -109,8 +106,6 @@ bool make_envir_var_array(char **argv, char **envp, t_pipex *data)
 	char	**path_array;
 	char	*tmp;
 	
-	data->new_argv[0] = argv[2];
-	data->new_argv[1] = argv[3];
 	path = find_path(envp);
 	if (!path)
 		return (false);
