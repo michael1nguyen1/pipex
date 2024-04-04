@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 21:53:16 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/03 21:07:12 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/04 14:37:05 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ bool execute(t_pipex *data, char** argv, char**envp, int flag)
 	close(data->pipes[1]);
 	execve(*argv, data->new_argv, envp);
 	exit(0);
+	printf("here");
 	return(true);
 }
 void openfiles(t_pipex *data, char** argv)
