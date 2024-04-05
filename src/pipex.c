@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 21:53:16 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/04 14:37:05 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/04 18:41:10 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,31 +35,36 @@ bool get_new_argv(t_pipex *data, char** argv , int flag)
 	return (true);
 }
 
-bool execute(t_pipex *data, char** argv, char**envp, int flag)
+void execute(t_pipex *data, char** argv, char**envp, int flag)
 {
 	char *command_path;
 
 	if (flag == 1)
+	{	
 		command_path = data->command_path1;
+		dup2(data->fd[0], STDIN_FILENO);
+	}
 	else
+	{
 		command_path = data->command_path2;
+		dup2(data->fd[0], STDIN_FILENO);
+		dup2(data->fd[1], STDOUT_FILENO);
+	}
 	if (!get_new_argv(data, argv, flag))
 		exit(EXIT_FAILURE);
-	dup2(data->pids[0], STDOUT_FILENO);
 	close(data->pipes[0]);
 	close(data->pipes[1]);
-	execve(*argv, data->new_argv, envp);
-	exit(0);
-	printf("here");
-	return(true);
+	if (execve(command_path, data->new_argv, envp) == -1)
+		perror ("execve");
+	exit(EXIT_FAILURE);
 }
 void openfiles(t_pipex *data, char** argv)
 {
-	 // Open a file for writing. If the file doesn't exist, create it. 
-    // The file permissions are set to 0644 (read/write for owner, read-only for group and others).
-    int fd = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    data->fd[0] = open(argv[1], O_RDONLY);
+	data->fd[1] = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
     
-    if (fd == -1) {
+    if (data->fd[0] == -1 || data->fd[1] == -1) 
+	{
         perror("open");
         exit(EXIT_FAILURE);
     }
@@ -68,8 +73,7 @@ void openfiles(t_pipex *data, char** argv)
 int forking(char **argv, char **envp, t_pipex *data)
 {
 	int i;
-	int status;
-
+	
 	i = 1;
 	if (pipe(data->pipes) < 0)
 	{
@@ -84,14 +88,16 @@ int forking(char **argv, char **envp, t_pipex *data)
 			execute(data, argv, envp, i);
 		i++;
 	}
+	close(data->fd[0]);
+	close(data->fd[1]);
 	close(data->pipes[0]);
 	close(data->pipes[1]);
 	return (0);
 }
 
-int wait_childs(t_pipex *data)
+bool wait_childs(t_pipex *data)
 {
-	int i =0;
+	int i = 0;
 	int status[2];
 
 	while (i < 2)
@@ -100,8 +106,8 @@ int wait_childs(t_pipex *data)
 		i++;
 	}
 	if (status[0] != 0 || status[1] != 0)
-		return -1;
-	return 0;
+		return (false);
+	return (true);
 }
 
 int main (int argc, char **argv, char **envp)
@@ -113,10 +119,10 @@ int main (int argc, char **argv, char **envp)
 		if(!make_envir_var_array(argv, envp, &data))
 			return(-1);
 		forking(argv, envp, &data);
-		wait_childs(&data);
+		if(!wait_childs(&data))
+			return (-1);
 	}
 	else
 		return (-1);
-	
 	return (0);	
 }
