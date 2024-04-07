@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 22:15:40 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/03 19:58:10 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/07 18:21:04 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,6 @@ int			array_len(char **a);
 
 void		free_array(char **array);
 bool		free_array_error(char **array);
-bool		free_bool(char *freeing, char *message);
+bool		full_clean(char* s, t_pipex *data);
 
 #endif

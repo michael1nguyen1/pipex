@@ -1,0 +1,20 @@
+		# ./pipex infile "ls -a " cat outfile
+    # 4  ./pipex infile "" cat outfile
+    # 5  ./pipex infile "" "" outfile
+    # 6  ./pipex infile cat "" outfile
+    7  ./pipex infile ./my_cat cat outfile
+    8  ./pipex infile my_cat cat outfile
+    9  ./pipex infile "grep 'test'" cat outfile
+   12  cat outfile
+   13  < infile cat | cat > outfile
+   test for diretory
+
+    9  ps -a | grep pipex
+   10  lsof -p 83280
+
+   ./pipex /dev/urandom cat | cat out
+
+   "grep "'hello space'" 
+   # unset path
+   path command
+   ./pipex Makefile "/bin/cat -e" cat outfile

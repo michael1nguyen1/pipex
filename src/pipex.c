@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 21:53:16 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/04 18:41:10 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/07 20:52:04 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ bool get_new_argv(t_pipex *data, char** argv , int flag)
 		data->new_argv = ft_split(argv[2], ' ');
 		if (!data->new_argv)
 		{
-			perror("split failed for first argv");
+			perror("split failed for first argv\n");
 			return (false);
 		}
 	}
@@ -28,14 +28,14 @@ bool get_new_argv(t_pipex *data, char** argv , int flag)
 		data->new_argv = ft_split(argv[3], ' ');
 		if (!data->new_argv)
 		{
-			perror("split failed for first argv");
+			perror("split failed for second argv\n");
 			return (false);
 		}
 	}
 	return (true);
 }
 
-void execute(t_pipex *data, char** argv, char**envp, int flag)
+void execute(t_pipex *data, char **argv, char**envp, int flag)
 {
 	char *command_path;
 
@@ -43,11 +43,12 @@ void execute(t_pipex *data, char** argv, char**envp, int flag)
 	{	
 		command_path = data->command_path1;
 		dup2(data->fd[0], STDIN_FILENO);
+		dup2(data->pipes[1], STDOUT_FILENO);
 	}
 	else
 	{
 		command_path = data->command_path2;
-		dup2(data->fd[0], STDIN_FILENO);
+		dup2(data->pipes[0], STDIN_FILENO);
 		dup2(data->fd[1], STDOUT_FILENO);
 	}
 	if (!get_new_argv(data, argv, flag))
@@ -112,17 +113,20 @@ bool wait_childs(t_pipex *data)
 
 int main (int argc, char **argv, char **envp)
 {
-	t_pipex		data;
+	t_pipex data = {NULL, NULL, NULL, {0, 0}, {0, 0}};
 	
 	if (argc == 5)
 	{
 		if(!make_envir_var_array(argv, envp, &data))
-			return(-1);
+			return(EXIT_FAILURE);
 		forking(argv, envp, &data);
 		if(!wait_childs(&data))
-			return (-1);
+			return (EXIT_FAILURE);
 	}
 	else
-		return (-1);
-	return (0);	
+	{
+		ft_printf(2, "Error!! Usage: ./pipex file1 cmd1 cmd2 file2\n");
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);	
 }

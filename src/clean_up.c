@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:14:42 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/03/27 17:33:51 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/07 18:49:39 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,26 @@ void free_array(char **array)
 	}
 	free(array);
 }
-bool free_bool(char *freeing, char *message)
+
+bool full_clean(char* s, t_pipex *data)
 {
 	int i;
-	i = 0;
 
-	free(freeing);
-	ft_printf(message);
-	return (false);
+	i = 0;
+	ft_printf(2, "%s\n", s);
+	if (data->command_path1)
+		free(data->command_path1);
+	if (data->command_path2)
+		free(data->command_path2);
+	if (data->new_argv)
+	{
+		while (data->new_argv[i])
+			free(data->new_argv[i++]);
+		free(data->new_argv);
+	}
+	if (data->fd[0])
+		close(data->fd[0]);
+	if (data->fd[1])
+		close(data->fd[1]);
+	return(false);
 }

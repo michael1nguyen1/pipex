@@ -1,3 +1,0 @@
-killall pipex
-top | grep pipex
-lsof -p21910

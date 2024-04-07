@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 15:48:32 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/02 20:51:37 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/07 20:23:01 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ static bool make_array_full_path(char **argv, char**path_array, t_pipex *data)
 		}
 		i++;
 	}
-	printf("path1 is %s path2 is %s\n", data->command_path1, data->command_path1);
 	return (true);
 }
 
@@ -83,6 +82,7 @@ static char *find_path(char **envp)
 	int 	i;
 	char 	*path;
 	
+	path = NULL;
 	i = 0;
 	while (envp[i])
 	{
@@ -90,10 +90,7 @@ static char *find_path(char **envp)
 		{
 			path = ft_strdup(envp[i]);
 			if(!path)
-			{
-				perror("strdup failed");
 				return (NULL);
-			}
 		}
 		i++;
 	}
@@ -108,10 +105,10 @@ bool make_envir_var_array(char **argv, char **envp, t_pipex *data)
 	
 	path = find_path(envp);
 	if (!path)
-		return (false);
+		return (full_clean("Path not found\n", data));
 	path_array = ft_split(path, ':');
 	if (!path_array)
-		free_bool(path, "Split failed \n");
+		return (full_clean("Split failed \n", data));
 	free(path);
 	tmp = path_array[0];
 	path_array[0] = ft_strdup(&path_array[0][5]);
@@ -119,7 +116,7 @@ bool make_envir_var_array(char **argv, char **envp, t_pipex *data)
 		return (free_array_error(path_array));
 	free(tmp);
 	if (!make_array_full_path(argv, path_array, data))
-		free_bool(NULL, "Making full path failed\n");
+		return (full_clean("Making full path failed\n", data));
 	free_array(path_array);
 	return (true);
 }

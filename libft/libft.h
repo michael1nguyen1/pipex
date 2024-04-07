@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 15:25:32 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/01/07 14:23:07 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/07 17:59:39 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,15 +81,15 @@ void				ft_lstiter(t_b_list *lst, void (*f)(void *));
 t_b_list			*ft_lstmap(t_b_list *lst, void *(*f)(void *),
 						void (*del)(void *));
 
-int					ft_printf(const char *s, ...);
-int					prints(char *s);
-int					printc(char s);
-int					printnbr(long n, int *c);
-int					ft_speci(va_list *arg, char s);
-int					printx(unsigned long n, char s, int *c);
-int					printp(unsigned long n, int *c);
-void				copy_str(t_list *list, char *full_line);
+int					ft_printf(int fd, const char *s, ...);
+int					prints(int fd, char *s);
+int					printc(int fd, char s);
+int					printnbr(int fd, long n, int *c);
+int					ft_speci(int fd, va_list *arg, char s);
+int					printx(int fd, unsigned long n, char s, int *c);
+int					printp(int fd, unsigned long n, int *c);
 
+void				copy_str(t_list *list, char *full_line);
 char				*get_next_line(int fd);
 t_list				*last_node(t_list *list);
 int					add_node(t_list **list, char *buf, int fd);
