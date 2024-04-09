@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:14:42 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/07 18:49:39 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/09 14:15:22 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ bool full_clean(char* s, t_pipex *data)
 	int i;
 
 	i = 0;
-	ft_printf(2, "%s\n", s);
+	if (s)
+		ft_printf(2, "%s\n", s);
 	if (data->command_path1)
 		free(data->command_path1);
 	if (data->command_path2)

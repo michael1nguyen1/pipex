@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 15:48:32 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/07 20:23:01 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/09 22:59:43 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,30 +49,60 @@ static bool make_array_full_path(char **argv, char**path_array, t_pipex *data)
 	int		j;
 	int		counter;
 	char	*tmp;
+	char	*arg;
 	
 	counter = 1;
-	i = 2;
+	i = 2;		
 	while (i <= 3)
 	{
+		if (ft_strchr(argv[i], ' '))
+		{
+			// dup to the space÷
+		}
+		if (ft_strchr(argv[i], '/'))
+		{
+				printf("here\n");
+			if (access(argv[i], F_OK) == 0)
+			{	
+					initialize_path(argv[i], counter, data);
+					counter++;
+					i++;
+					continue;
+			}
+		}
 		j = 0;
 		while (path_array[j] != NULL)
 		{
 			tmp = make_whole_path(path_array[j], argv[i]);
+			printf("%s\n", tmp);
 			if (!tmp)
-			{
-				perror("make_whole_path failed");
-				return (false);
-			}
+				return (full_clean("make_whole_path failed", data));
 			if (access(tmp, F_OK) == 0)
-			{	
 				initialize_path(tmp, counter, data);
-				counter++;
-			}
 			else
 				free(tmp);
 			j++;
 		}
+		counter++;
 		i++;
+	}
+	if (!data->command_path1 && !data->command_path2)
+	{
+		ft_printf(2, "pipex: command not found: %s\npipex: command not found: %s", argv[2],argv[3]);
+		full_clean(NULL, data);
+		exit(EXIT_FAILURE);
+	}
+	else if(!data->command_path1)
+	{
+		ft_printf(2, "pipex: command not found: %s", argv[2]);
+		full_clean(NULL, data);
+		exit(EXIT_FAILURE);
+	}
+	else if(!data->command_path2)
+	{
+		ft_printf(2, "pipex: command not found: %s", argv[3]);
+		full_clean(NULL, data);
+		exit(EXIT_FAILURE);
 	}
 	return (true);
 }

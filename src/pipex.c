@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 21:53:16 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/07 20:52:04 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/09 22:23:33 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,13 @@ void execute(t_pipex *data, char **argv, char**envp, int flag)
 		dup2(data->pipes[0], STDIN_FILENO);
 		dup2(data->fd[1], STDOUT_FILENO);
 	}
+	dprintf(2, "command-path is : %s \n", command_path);
 	if (!get_new_argv(data, argv, flag))
 		exit(EXIT_FAILURE);
 	close(data->pipes[0]);
 	close(data->pipes[1]);
+	for (int i = 0; data->new_argv[i]; i++)
+		ft_printf(2, "%s\n", data->new_argv[i]);
 	if (execve(command_path, data->new_argv, envp) == -1)
 		perror ("execve");
 	exit(EXIT_FAILURE);
@@ -64,9 +67,16 @@ void openfiles(t_pipex *data, char** argv)
     data->fd[0] = open(argv[1], O_RDONLY);
 	data->fd[1] = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
     
-    if (data->fd[0] == -1 || data->fd[1] == -1) 
+    if (data->fd[0] == -1) 
 	{
-        perror("open");
+		ft_printf(2, "%s: ", argv[1]);
+        perror(NULL);
+        exit(EXIT_FAILURE);
+    }
+    if (data->fd[1] == -1) 
+	{
+		ft_printf(2, "%s: ", argv[4]);
+        perror(NULL);
         exit(EXIT_FAILURE);
     }
 }
@@ -113,7 +123,8 @@ bool wait_childs(t_pipex *data)
 
 int main (int argc, char **argv, char **envp)
 {
-	t_pipex data = {NULL, NULL, NULL, {0, 0}, {0, 0}};
+	t_pipex data;
+	data = (t_pipex){0};
 	
 	if (argc == 5)
 	{
