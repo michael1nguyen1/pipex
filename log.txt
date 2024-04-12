@@ -9,6 +9,18 @@
 #./pipex infile my_cat cat outfile
 #./pipex infile "grep 'test'" cat outfile
 # test for directory
-./pipex Makefile "/bin/cat -e" cat outfile
+#./pipex Makefile "/bin/cat -e" cat outfile
 ps -a | grep pipex
 lsof -p 83280
+
+./pipex infile "awk "{print\ \$1}"" cat outfile
+./pipex infile "awk '{print\ \$1}'" cat outfile
+< infile awk {print\ \$1} | cat > outfile
+
+./pipex infile "awk "{print \$1}"" cat outfile  // argv cant do this
+./pipex infile "awk '{print \$1}'" cat outfile
+< infile awk "{print \$1}" | cat > outfile
+
+
+./pipex infile "awk '{print $1}'" cat outfile
+< infile awk '{print $1}' | cat > outfile

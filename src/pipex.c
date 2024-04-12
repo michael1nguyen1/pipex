@@ -6,13 +6,13 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 21:53:16 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/09 22:23:33 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/12 21:36:00 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-bool get_new_argv(t_pipex *data, char** argv , int flag)
+bool	get_new_argv(t_pipex *data, char **argv, int flag)
 {
 	if (flag == 1)
 	{
@@ -35,12 +35,12 @@ bool get_new_argv(t_pipex *data, char** argv , int flag)
 	return (true);
 }
 
-void execute(t_pipex *data, char **argv, char**envp, int flag)
+void	execute(t_pipex *data, char **argv, char**envp, int flag)
 {
-	char *command_path;
+	char	*command_path;
 
 	if (flag == 1)
-	{	
+	{
 		command_path = data->command_path1;
 		dup2(data->fd[0], STDIN_FILENO);
 		dup2(data->pipes[1], STDOUT_FILENO);
@@ -51,7 +51,7 @@ void execute(t_pipex *data, char **argv, char**envp, int flag)
 		dup2(data->pipes[0], STDIN_FILENO);
 		dup2(data->fd[1], STDOUT_FILENO);
 	}
-	dprintf(2, "command-path is : %s \n", command_path);
+	// dprintf(2, "command-path is : %s \n", command_path);
 	if (!get_new_argv(data, argv, flag))
 		exit(EXIT_FAILURE);
 	close(data->pipes[0]);
@@ -62,29 +62,30 @@ void execute(t_pipex *data, char **argv, char**envp, int flag)
 		perror ("execve");
 	exit(EXIT_FAILURE);
 }
-void openfiles(t_pipex *data, char** argv)
+
+void	openfiles(t_pipex *data, char **argv)
 {
-    data->fd[0] = open(argv[1], O_RDONLY);
+	data->fd[0] = open(argv[1], O_RDONLY);
 	data->fd[1] = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    
-    if (data->fd[0] == -1) 
+	// data->fd[0] = -1;
+	if (data->fd[0] == -1)
 	{
-		ft_printf(2, "%s: ", argv[1]);
-        perror(NULL);
-        exit(EXIT_FAILURE);
-    }
-    if (data->fd[1] == -1) 
+		full_clean(NULL, data);
+		ft_printf(2, "permission denied: %s\n", argv[1]);
+		exit(EXIT_FAILURE);
+	}
+	if (data->fd[1] == -1)
 	{
-		ft_printf(2, "%s: ", argv[4]);
-        perror(NULL);
-        exit(EXIT_FAILURE);
-    }
+		full_clean(NULL, data);
+		ft_printf(2, "permission denied: %s\n", argv[4]);
+		exit(EXIT_FAILURE);
+	}
 }
 
-int forking(char **argv, char **envp, t_pipex *data)
+int	forking(char **argv, char **envp, t_pipex *data)
 {
-	int i;
-	
+	int	i;
+
 	i = 1;
 	if (pipe(data->pipes) < 0)
 	{
@@ -106,14 +107,15 @@ int forking(char **argv, char **envp, t_pipex *data)
 	return (0);
 }
 
-bool wait_childs(t_pipex *data)
+bool	wait_childs(t_pipex *data)
 {
-	int i = 0;
-	int status[2];
+	int	i;
+	int	status[2];
 
+	i = 0;
 	while (i < 2)
 	{
-		waitpid(data->pids[i], &status[i], 0 );
+		waitpid(data->pids[i], &status[i], 0);
 		i++;
 	}
 	if (status[0] != 0 || status[1] != 0)
@@ -121,17 +123,17 @@ bool wait_childs(t_pipex *data)
 	return (true);
 }
 
-int main (int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
-	t_pipex data;
+	t_pipex	data;
+
 	data = (t_pipex){0};
-	
 	if (argc == 5)
 	{
-		if(!make_envir_var_array(argv, envp, &data))
-			return(EXIT_FAILURE);
+		if (!make_envir_var_array(argv, envp, &data))
+			return (EXIT_FAILURE);
 		forking(argv, envp, &data);
-		if(!wait_childs(&data))
+		if (!wait_childs(&data))
 			return (EXIT_FAILURE);
 	}
 	else
@@ -139,5 +141,5 @@ int main (int argc, char **argv, char **envp)
 		ft_printf(2, "Error!! Usage: ./pipex file1 cmd1 cmd2 file2\n");
 		return (EXIT_FAILURE);
 	}
-	return (EXIT_SUCCESS);	
+	return (EXIT_SUCCESS);
 }

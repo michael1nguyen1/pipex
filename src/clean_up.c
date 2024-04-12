@@ -6,18 +6,18 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:14:42 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/09 14:15:22 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/12 16:20:15 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-bool free_array_error(char **array)
+bool	free_array_error(char **array)
 {
-	int i;
-	
+	int	i;
+
 	i = 0;
-	while(array[i])
+	while (array[i])
 	{
 		free(array[i]);
 		i++;
@@ -26,12 +26,12 @@ bool free_array_error(char **array)
 	return (false);
 }
 
-void free_array(char **array)
+void	free_array(char **array)
 {
-	int i;
-	
+	int	i;
+
 	i = 0;
-	while(array[i])
+	while (array[i])
 	{
 		free(array[i]);
 		i++;
@@ -39,9 +39,9 @@ void free_array(char **array)
 	free(array);
 }
 
-bool full_clean(char* s, t_pipex *data)
+bool	full_clean(char *s, t_pipex *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (s)
@@ -60,5 +60,5 @@ bool full_clean(char* s, t_pipex *data)
 		close(data->fd[0]);
 	if (data->fd[1])
 		close(data->fd[1]);
-	return(false);
+	return (false);
 }
