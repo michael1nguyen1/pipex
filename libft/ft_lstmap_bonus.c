@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 16:39:09 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/01/05 14:26:15 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/15 22:13:12 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ t_b_list	*ft_lstmap(t_b_list *lst, void *(*f)(void *), void (*del)(void *))
 {
 	t_b_list	*first;
 	t_b_list	*new;
-	void	*tmp;
+	void		*tmp;
 
 	if (!f || !del)
 		return (NULL);

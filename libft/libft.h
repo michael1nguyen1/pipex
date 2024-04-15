@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 15:25:32 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/15 19:53:40 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/15 22:14:01 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 typedef struct sbonus_list
 {
-	void			*content;
+	void				*content;
 	struct sbonus_list	*next;
 }		t_b_list;
 
@@ -95,6 +95,5 @@ t_list				*last_node(t_list *list);
 int					add_node(t_list **list, char *buf, int fd);
 int					len_of_string(t_list *list);
 void				clean_list(t_list **list, t_list *remainder_node);
-
 
 #endif // LIBFT_H

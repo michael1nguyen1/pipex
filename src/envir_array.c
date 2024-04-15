@@ -6,13 +6,13 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 15:48:32 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/12 21:35:52 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/15 22:44:01 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static char	*make_whole_path(char const *s1, char const *s2)
+char	*make_whole_path(char const *s1, char const *s2)
 {
 	char	*s3;
 	int		i;
@@ -35,83 +35,12 @@ static char	*make_whole_path(char const *s1, char const *s2)
 	return (s3);
 }
 
-static void	initialize_path(char *path, int counter, t_pipex *data)
+void	initialize_path(char *path, int counter, t_pipex *data)
 {
 	if (counter == 1)
 		data->command_path1 = ft_strdup(path);
 	else
 		data->command_path2 = ft_strdup(path);
-}
-
-void	check_path(t_pipex *data, char **argv)
-{
-	if (!data->command_path1 && !data->command_path2)
-	{
-		ft_printf(2,
-			"pipex: command not found: %s\npipex: command not found: %s\n",
-			argv[2], argv[3]);
-		full_clean(NULL, data);
-		exit(EXIT_FAILURE);
-	}
-	else if (!data->command_path1)
-	{
-		ft_printf(2, "pipex: command not found: %s\n", argv[2]);
-		full_clean(NULL, data);
-		exit(EXIT_FAILURE);
-	}
-	else if (!data->command_path2)
-	{
-		ft_printf(2, "pipex: command not found: %s\n", argv[3]);
-		full_clean(NULL, data);
-		exit(EXIT_FAILURE);
-	}
-}
-
-void check_access(char *path, char **path_array, t_pipex *data, int *counter)
-{
-	int		j;
-	char	*tmp;
-	
-	j = 0;
-	while (path_array[j] != NULL)
-		{
-			tmp = make_whole_path(path_array[j], path);
-	// printf("path is %s\n", tmp);
-			if (!tmp)
-			{
-				full_clean("make_whole_path failed", data);
-				exit(-1);
-			}
-			if (access(tmp, F_OK) == 0){
-	// printf("fuck23\n");
-				initialize_path(tmp, *counter, data);
-				free(tmp);}
-			else
-				free(tmp);
-			j++;
-		}
-	(*counter)++;
-}
-
-void arg_has_space(char *argv, char **path_array, t_pipex *data, int *counter)
-{
-	int		j; 
-	int		command_len;
-	char	path[100];
-	
-	j = 0;
-	command_len = 0;
-	while (argv[command_len] != ' ')
-		command_len++;
-	while (j < command_len)
-	{
-		path[j] = argv[j];
-		j++;	
-	}
-	path[j] = '\0';
-	check_access(path, path_array, data, counter);
-	// printf("path is %s\n", path);
-	initialize_path(path, *counter, data);
 }
 
 static bool	make_array_full_path(char **argv, char**path_array, t_pipex *data)
@@ -139,7 +68,6 @@ static bool	make_array_full_path(char **argv, char**path_array, t_pipex *data)
 		}
 		check_access(argv[i++], path_array, data, &path_counter);
 	}
-	// printf("cp are : %s and %s", data->command_path1, data->command_path2);
 	check_path(data, argv);
 	return (true);
 }
@@ -173,7 +101,6 @@ bool	make_envir_var_array(char **argv, char **envp, t_pipex *data)
 	path = find_path(envp);
 	if (!path)
 		return (full_clean("Path not found\n", data));
-	// printf("env path is %s\n", path);
 	path_array = ft_split(path, ':');
 	if (!path_array)
 		return (full_clean("Split failed \n", data));

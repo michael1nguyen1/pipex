@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 13:46:58 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/07 18:00:46 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/15 22:13:36 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	ft_printf(int fd, const char *s, ...)
 	va_list	arg;
 
 	va_start(arg, s);
-	prtlen = ft_checker(fd ,&arg, s);
+	prtlen = ft_checker(fd, &arg, s);
 	va_end(arg);
 	return (prtlen);
 }
