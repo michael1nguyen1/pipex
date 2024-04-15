@@ -6,32 +6,82 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 21:53:16 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/12 21:36:00 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/15 20:30:17 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-bool	get_new_argv(t_pipex *data, char **argv, int flag)
+bool	trim_arg(t_pipex *data)
 {
+	int i;
+	char *tmp;
+
+	i = 0;
+	while (data->new_argv[i])
+	{
+		if(ft_strchr(data->new_argv[i], 39))
+		{
+			tmp = data->new_argv[i];
+			if (!(data->new_argv[i] = ft_strtrim(data->new_argv[i], "'")))
+			{	
+				free(tmp);
+				return (false);
+			}
+		}
+		i++;
+	}
+	return (true);
+}
+
+void prep_split(char *old, char *new)
+{
+    int	i;
+    int	p;
+
+	i = 0;
+	p = 0;
+    while (old[i])
+    {
+        if (old[i] == '\'')
+            p = (p + 1) % 2;
+        else if (old[i] == '{')
+            p++;
+        else if (old[i] == '}')
+            p--;
+        if (old[i] == ' ' && p == 0)
+            new[i] = '\a';
+        else
+            new[i] = old[i];
+        i++;
+    }
+    new[i] = '\0';
+}
+
+
+bool	get_new_argv(t_pipex *data, char **argv, int flag)
+{	
+	char newstr[300];
+	
 	if (flag == 1)
 	{
-		data->new_argv = ft_split(argv[2], ' ');
+		prep_split(argv[2], newstr);
+		ft_printf(2, "newstr is %s\n", newstr);
+		data->new_argv = ft_split(newstr, '\a');
 		if (!data->new_argv)
-		{
-			perror("split failed for first argv\n");
-			return (false);
-		}
+			return (full_clean("split failed for first argv\n", data));
 	}
 	else
 	{
-		data->new_argv = ft_split(argv[3], ' ');
+		prep_split(argv[3], newstr);
+		data->new_argv = ft_split(newstr, '\a');
 		if (!data->new_argv)
-		{
-			perror("split failed for second argv\n");
-			return (false);
-		}
+			return (full_clean("split failed for second argv\n", data));
 	}
+	if (!(trim_arg(data)))
+		return (full_clean("trim arg failed\n", data));
+	for(int i = 0; data->new_argv[i]; i++)
+		ft_printf(2, "string is %s\n", data->new_argv[i]);
 	return (true);
 }
 
@@ -56,8 +106,8 @@ void	execute(t_pipex *data, char **argv, char**envp, int flag)
 		exit(EXIT_FAILURE);
 	close(data->pipes[0]);
 	close(data->pipes[1]);
-	for (int i = 0; data->new_argv[i]; i++)
-		ft_printf(2, "%s\n", data->new_argv[i]);
+	// for (int i = 0; data->new_argv[i]; i++)
+	// 	ft_printf(2, "%s\n", data->new_argv[i]);
 	if (execve(command_path, data->new_argv, envp) == -1)
 		perror ("execve");
 	exit(EXIT_FAILURE);
