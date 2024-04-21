@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:14:42 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/15 17:53:12 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/18 17:51:50 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,9 @@ bool	full_clean(char *s, t_pipex *data)
 			free(data->new_argv[i++]);
 		free(data->new_argv);
 	}
-	if (data->fd[0])
+	if (data->fd[0] >= 0)
 		close(data->fd[0]);
-	if (data->fd[1])
+	if (data->fd[1] >= 0)
 		close(data->fd[1]);
 	return (false);
 }

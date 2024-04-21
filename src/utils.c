@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:17:45 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/15 22:43:44 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/19 14:47:07 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,4 +83,22 @@ bool	wait_childs(t_pipex *data)
 	if (status[0] != 0 || status[1] != 0)
 		return (false);
 	return (true);
+}
+
+bool	space_checker(char *s)
+{
+	int	i;
+
+	i = 0;
+	if (s[0] == ' ')
+		return (true);
+	while (s[i])
+	{
+		if (s[i] == ' ' && s[i + 1] == ' ')
+			return (true);
+		if (s[i] == ' ' && s[i + 1] == '\0')
+			return (true);
+		i++;
+	}
+	return (false);
 }

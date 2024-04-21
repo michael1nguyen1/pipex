@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 21:53:16 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/15 22:38:24 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/20 18:10:42 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ bool	get_new_argv(t_pipex *data, char **argv, int flag)
 	if (flag == 1)
 	{
 		prep_split(argv[2], newstr);
-		ft_printf(2, "newstr is %s\n", newstr);
 		data->new_argv = ft_split(newstr, '\a');
 		if (!data->new_argv)
 			return (full_clean("split failed for first argv\n", data));
@@ -56,9 +55,11 @@ void	execute(t_pipex *data, char **argv, char**envp, int flag)
 		exit(EXIT_FAILURE);
 	close(data->pipes[0]);
 	close(data->pipes[1]);
-	if (execve(command_path, data->new_argv, envp) == -1)
-		perror ("execve");
-	exit(EXIT_FAILURE);
+	// for (int i = 0; data->new_argv[i]; i++)
+	// 	ft_printf(2, "%s\n", data->new_argv[i]);
+	// ft_printf(2, "command path is %s\n", command_path);
+	execve(command_path, data->new_argv, envp);
+	exit(127);
 }
 
 void	openfiles(t_pipex *data, char **argv)
@@ -66,42 +67,38 @@ void	openfiles(t_pipex *data, char **argv)
 	data->fd[0] = open(argv[1], O_RDONLY);
 	data->fd[1] = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (data->fd[0] == -1)
-	{
-		full_clean(NULL, data);
-		ft_printf(2, "pipex: %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-	}
+		ft_printf(2, "pipex: %s: %s\n", argv[1], strerror(errno));
 	if (data->fd[1] == -1)
-	{
-		full_clean(NULL, data);
-		ft_printf(2, "permission denied: %s\n", argv[4]);
-		exit(EXIT_FAILURE);
-	}
+		ft_printf(2, "pipex: %s: %s\n", argv[4], strerror(errno));
 }
 
-int	forking(char **argv, char **envp, t_pipex *data)
+bool	forking(char **argv, char **envp, t_pipex *data)
 {
 	int	i;
 
 	i = 1;
 	if (pipe(data->pipes) < 0)
 	{
-		perror("creating pipe failed");
-		return (-1);
+		ft_printf(2, "creating pipe failed\n");
+		return (false);
 	}
 	openfiles(data, argv);
 	while (i <= 2)
 	{
+		if (data->fd[0] == -1 || data->fd[1] == -1)
+		{
+			i++;
+			continue ;
+		}
 		data->pids[i - 1] = fork();
 		if (data->pids[i - 1] == 0)
 			execute(data, argv, envp, i);
 		i++;
 	}
-	close(data->fd[0]);
-	close(data->fd[1]);
 	close(data->pipes[0]);
 	close(data->pipes[1]);
-	return (0);
+	full_clean(NULL, data);
+	return (true);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -111,9 +108,12 @@ int	main(int argc, char **argv, char **envp)
 	data = (t_pipex){0};
 	if (argc == 5)
 	{
+		if (!check_argv(argv))
+			exit (127);
 		if (!make_envir_var_array(argv, envp, &data))
 			return (EXIT_FAILURE);
-		forking(argv, envp, &data);
+		if (!forking(argv, envp, &data))
+			full_clean(NULL, &data);
 		if (!wait_childs(&data))
 			return (EXIT_FAILURE);
 	}

@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 22:15:40 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/15 22:43:04 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/19 14:47:44 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ typedef struct pipex
 	int		fd[2];
 }	t_pipex;
 
+bool	check_argv(char **argv);
+bool	space_checker(char *s);
 bool	make_envir_var_array(char **argv, char **envp, t_pipex *data);
 int		array_len(char **a);
 bool	trim_arg(t_pipex *data);

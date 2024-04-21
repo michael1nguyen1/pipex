@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 15:48:32 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/15 22:44:01 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:13:07 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static bool	make_array_full_path(char **argv, char**path_array, t_pipex *data)
 	return (true);
 }
 
-static char	*find_path(char **envp)
+static char	*find_path(char **envp, t_pipex *data, char **argv)
 {
 	int		i;
 	char	*path;
@@ -81,14 +81,19 @@ static char	*find_path(char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		if (ft_strncmp("PATH", envp[i], 4) == 0)
+		if (ft_strncmp("PATH=", envp[i], 5) == 0)
 		{
 			path = ft_strdup(envp[i]);
 			if (!path)
+			{
+				full_clean("Strdup failed\n", data);
 				return (NULL);
+			}
+			return (path);
 		}
 		i++;
 	}
+	(void)argv;
 	return (path);
 }
 
@@ -98,9 +103,19 @@ bool	make_envir_var_array(char **argv, char **envp, t_pipex *data)
 	char	**path_array;
 	char	*tmp;
 
-	path = find_path(envp);
+	path = find_path(envp, data, argv);
 	if (!path)
-		return (full_clean("Path not found\n", data));
+	{
+		if (access(argv[2], F_OK))
+			perror("pipex");
+		else
+			data->command_path1 = ft_strdup(argv[2]);
+		if (access(argv[3], F_OK))
+			perror("pipex");
+		else
+			data->command_path2 = ft_strdup(argv[3]);
+		return (true);
+	}
 	path_array = ft_split(path, ':');
 	if (!path_array)
 		return (full_clean("Split failed \n", data));
