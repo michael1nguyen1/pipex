@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 22:15:40 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/19 14:47:44 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/22 13:52:57 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,25 @@ typedef struct pipex
 	pid_t	pids[2];
 	int		pipes[2];
 	int		fd[2];
+	int		status[2];
 }	t_pipex;
 
-bool	check_argv(char **argv);
-bool	space_checker(char *s);
+bool	no_path_check(char **argv, t_pipex *data);
+bool	only_space(char *s, char c);
+void	argv2_checker(char **argv, t_pipex *data);
+void	argv3_checker(char **argv, t_pipex *data);
+char	*child1(char **argv, t_pipex *data, int flag);
+char	*child2(char **argv, t_pipex *data, int flag);
+void	check_argv(t_pipex *data, char **argv, int flag);
 bool	make_envir_var_array(char **argv, char **envp, t_pipex *data);
 int		array_len(char **a);
 bool	trim_arg(t_pipex *data);
 void	prep_split(char *old, char *new);
-bool	wait_childs(t_pipex *data);
+void	wait_childs(t_pipex *data);
 void	free_array(char **array);
 bool	free_array_error(char **array);
 bool	full_clean(char *s, t_pipex *data);
-void	check_path(t_pipex *data, char **argv);
+void	check_path(t_pipex *data, char **argv, int flag);
 void	check_access(char *path, char **path_array, t_pipex *data, int *count);
 void	arg_has_space(char *argv, char **path_array, t_pipex *data, int *count);
 char	*make_whole_path(char const *s1, char const *s2);

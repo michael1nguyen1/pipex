@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 15:48:32 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/19 18:13:07 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/22 14:02:19 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ void	initialize_path(char *path, int counter, t_pipex *data)
 static bool	make_array_full_path(char **argv, char**path_array, t_pipex *data)
 {
 	int		i;
-	int		path_counter;
+	int		counter;
 
-	path_counter = 1;
+	counter = 1;
 	i = 2;
 	while (i <= 3)
 	{
@@ -56,23 +56,22 @@ static bool	make_array_full_path(char **argv, char**path_array, t_pipex *data)
 		{
 			if (access(argv[i], F_OK) == 0)
 			{
-				initialize_path(argv[i++], path_counter, data);
-				path_counter++;
+				initialize_path(argv[i++], counter, data);
+				counter++;
 				continue ;
 			}
 		}
 		if (ft_strchr(argv[i], ' '))
 		{
-			arg_has_space(argv[i++], path_array, data, &path_counter);
+			arg_has_space(argv[i++], path_array, data, &counter);
 			continue ;
 		}
-		check_access(argv[i++], path_array, data, &path_counter);
+		check_access(argv[i++], path_array, data, &counter);
 	}
-	check_path(data, argv);
 	return (true);
 }
 
-static char	*find_path(char **envp, t_pipex *data, char **argv)
+static char	*find_path(char **envp, t_pipex *data)
 {
 	int		i;
 	char	*path;
@@ -93,7 +92,6 @@ static char	*find_path(char **envp, t_pipex *data, char **argv)
 		}
 		i++;
 	}
-	(void)argv;
 	return (path);
 }
 
@@ -103,22 +101,13 @@ bool	make_envir_var_array(char **argv, char **envp, t_pipex *data)
 	char	**path_array;
 	char	*tmp;
 
-	path = find_path(envp, data, argv);
+	path = find_path(envp, data);
 	if (!path)
-	{
-		if (access(argv[2], F_OK))
-			perror("pipex");
-		else
-			data->command_path1 = ft_strdup(argv[2]);
-		if (access(argv[3], F_OK))
-			perror("pipex");
-		else
-			data->command_path2 = ft_strdup(argv[3]);
-		return (true);
-	}
+		if (no_path_check(argv, data))
+			return (true);
 	path_array = ft_split(path, ':');
 	if (!path_array)
-		return (full_clean("Split failed \n", data));
+		return (full_clean("Split failed", data));
 	free(path);
 	tmp = path_array[0];
 	path_array[0] = ft_strdup(&path_array[0][5]);
@@ -126,7 +115,7 @@ bool	make_envir_var_array(char **argv, char **envp, t_pipex *data)
 		return (free_array_error(path_array));
 	free(tmp);
 	if (!make_array_full_path(argv, path_array, data))
-		return (full_clean("Making full path failed\n", data));
+		return (full_clean("Making full path failed", data));
 	free_array(path_array);
 	return (true);
 }

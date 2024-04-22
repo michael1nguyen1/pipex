@@ -6,7 +6,7 @@
 #    By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/15 19:56:43 by linhnguy          #+#    #+#              #
-#    Updated: 2024/04/18 18:13:53 by linhnguy         ###   ########.fr        #
+#    Updated: 2024/04/22 13:52:15 by linhnguy         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,9 +16,10 @@ LIBFT = libft.a
 LIBFTDIR = libft
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror
 DEBUG_CFLAGS = -fsanitize=address -g3
-SRCS = src/pipex.c src/envir_array.c src/utils.c src/clean_up.c src/checks.c 
+SRCS = src/pipex.c src/envir_array.c src/utils.c src/clean_up.c src/checks.c \
+		src/childsft.c
 OBJS = $(SRCS:.c=.o)
 RM = rm -f
 
@@ -30,7 +31,7 @@ $(NAME):$(OBJS)
 	@echo "Program Made"
 
 debug: re
-	$(CC) $(OBJS) $(LIBS) $(HEADERS) $(DEBUG_CFLAGS) $(LIBFTDIR)/$(LIBFT) -o $(NAME)
+	$(CC) $(OBJS) $(LIBS) $(HEADERS) $(DEBUG_CFLAGS) $(CFLAGS) $(LIBFTDIR)/$(LIBFT) -o $(NAME)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@ $(HEADERS)
