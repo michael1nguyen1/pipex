@@ -6,7 +6,7 @@
 /*   By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 21:53:16 by linhnguy          #+#    #+#             */
-/*   Updated: 2024/04/22 15:50:08 by linhnguy         ###   ########.fr       */
+/*   Updated: 2024/04/22 15:51:03 by linhnguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,7 @@ bool	forking(char **argv, char **envp, t_pipex *data)
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipex	data;
-	int i = 0;
-	
+
 	data = (t_pipex){0};
 	if (argc == 5)
 	{
