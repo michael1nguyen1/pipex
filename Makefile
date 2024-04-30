@@ -6,7 +6,7 @@
 #    By: linhnguy <linhnguy@hive.student.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/15 19:56:43 by linhnguy          #+#    #+#              #
-#    Updated: 2024/04/22 13:52:15 by linhnguy         ###   ########.fr        #
+#    Updated: 2024/04/25 19:18:55 by linhnguy         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ all: $(NAME)
 
 $(NAME):$(OBJS)
 	@make -C $(LIBFTDIR)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBS) $(HEADERS) $(LIBFTDIR)/$(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBS) $(LIBFTDIR)/$(LIBFT) -o $(NAME)
 	@echo "Program Made"
 
 debug: re

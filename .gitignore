@@ -2,3 +2,4 @@ log.txt
 infile
 outfile
 .DS_Store
+ppx_err_tester.sh
